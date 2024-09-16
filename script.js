@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mapContainer.addEventListener('mousedown', (e) => {
         if (e.target.classList.contains('cell') && selectedTileType) {
             isDragging = true;
+            document.body.classList.add('dragging'); // ドラッグ中のカーソルスタイルを適用
             updateCell(e.target);
         }
     });
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // マウスアップでドラッグ終了
     document.addEventListener('mouseup', () => {
         isDragging = false;
+        document.body.classList.remove('dragging'); // ドラッグ終了後にカーソルスタイルを元に戻す
     });
 
     // マウスムーブでセルの更新
@@ -70,4 +72,5 @@ document.addEventListener('DOMContentLoaded', () => {
         URL.revokeObjectURL(url);
     });
 });
+
 
