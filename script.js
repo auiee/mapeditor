@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tiles = document.querySelectorAll('#tiles .tile');
     const mapContainer = document.getElementById('map-container');
     let selectedTileType = '';
+    let isDragging = false;
 
     // マップグリッドを作成
     for (let i = 0; i < 100; i++) {
@@ -21,13 +22,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // グリッドセルへのクリック
-    mapContainer.addEventListener('click', (e) => {
+    // マウスダウンでドラッグ開始
+    mapContainer.addEventListener('mousedown', (e) => {
         if (e.target.classList.contains('cell') && selectedTileType) {
-            e.target.style.backgroundImage = `url('images/${selectedTileType}.png')`;
-            e.target.dataset.type = selectedTileType;
+            isDragging = true;
+            updateCell(e.target);
         }
     });
+
+    // マウスアップでドラッグ終了
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+
+    // マウスムーブでセルの更新
+    mapContainer.addEventListener('mousemove', (e) => {
+        if (isDragging && selectedTileType) {
+            if (e.target.classList.contains('cell')) {
+                updateCell(e.target);
+            }
+        }
+    });
+
+    function updateCell(cell) {
+        cell.style.backgroundImage = `url('images/${selectedTileType}.png')`;
+        cell.dataset.type = selectedTileType;
+    }
 
     // マップの保存
     document.getElementById('save-map').addEventListener('click', () => {
