@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // グリッドセルへのドラッグ&ドロップ
     mapContainer.addEventListener('click', (e) => {
         if (e.target.classList.contains('cell') && selectedTileType) {
-            e.target.style.backgroundColor = getTileColor(selectedTileType);
+            e.target.style.backgroundImage = `url('images/${selectedTileType}.png')`;
             e.target.dataset.type = selectedTileType;
         }
     });
@@ -42,14 +42,5 @@ document.addEventListener('DOMContentLoaded', () => {
         a.click();
         URL.revokeObjectURL(url);
     });
-
-    function getTileColor(type) {
-        switch (type) {
-            case 'grass': return 'lightgreen';
-            case 'water': return 'lightblue';
-            case 'mountain': return 'gray';
-            default: return '#f0f0f0';
-        }
-    }
 });
 
