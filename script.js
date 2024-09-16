@@ -8,7 +8,7 @@ const tilesetCtx = tilesetCanvas.getContext('2d');
 const mapCtx = mapCanvas.getContext('2d');
 
 let tileset = new Image();
-tileset.src = 'path/to/your/tileset.png'; // タイルセット画像のパスを指定してください
+tileset.src = 'images/grass.png'; // タイルセット画像のパスを指定してください
 tileset.onload = function() {
     tilesetCanvas.width = tileset.width;
     tilesetCanvas.height = tileset.height;
