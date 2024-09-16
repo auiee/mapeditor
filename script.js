@@ -1,105 +1,64 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const tiles = document.querySelectorAll('#tiles .tile');
-    const mapContainer = document.getElementById('map-container');
-    let selectedTileType = '';
-    let isDragging = false;
+const TILE_SIZE = 32;
+const MAP_WIDTH = 20;
+const MAP_HEIGHT = 15;
 
-    // マップグリッドを作成
-    for (let i = 0; i < 100; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.dataset.x = i % 10;
-        cell.dataset.y = Math.floor(i / 10);
-        mapContainer.appendChild(cell);
-    }
+const tilesetCanvas = document.getElementById('tilesetCanvas');
+const mapCanvas = document.getElementById('mapCanvas');
+const tilesetCtx = tilesetCanvas.getContext('2d');
+const mapCtx = mapCanvas.getContext('2d');
 
-    // マップチップの選択
-    tiles.forEach(tile => {
-        tile.addEventListener('mousedown', (e) => {
-            e.preventDefault(); // デフォルトのドラッグ動作を防止
-            selectedTileType = tile.dataset.type;
-            tiles.forEach(t => t.classList.remove('selected')); // すべてのタイルの選択状態を解除
-            tile.classList.add('selected'); // 選択中のタイルにクラスを追加
-        });
-    });
+let tileset = new Image();
+tileset.src = 'path/to/your/tileset.png'; // タイルセット画像のパスを指定してください
+tileset.onload = function() {
+    tilesetCanvas.width = tileset.width;
+    tilesetCanvas.height = tileset.height;
+    tilesetCtx.drawImage(tileset, 0, 0);
+    
+    mapCanvas.width = MAP_WIDTH * TILE_SIZE;
+    mapCanvas.height = MAP_HEIGHT * TILE_SIZE;
+    initMap();
+};
 
-    // マウスダウンでドラッグ開始
-    mapContainer.addEventListener('mousedown', (e) => {
-        if (e.target.classList.contains('cell') && selectedTileType) {
-            isDragging = true;
-            document.body.classList.add('dragging'); // ドラッグ中のカーソルスタイルを適用
-            updateCell(e.target);
-        }
-        e.preventDefault(); // グリッドのドラッグ動作を防止
-    });
+let selectedTile = { x: 0, y: 0 };
+let map = Array(MAP_HEIGHT).fill().map(() => Array(MAP_WIDTH).fill(0));
 
-    // マウスアップでドラッグ終了
-    document.addEventListener('mouseup', (e) => {
-        if (isDragging) {
-            isDragging = false;
-            document.body.classList.remove('dragging'); // ドラッグ終了後にカーソルスタイルを元に戻す
-        }
-    });
-
-    // マウスムーブでセルの更新
-    mapContainer.addEventListener('mousemove', (e) => {
-        if (isDragging && selectedTileType) {
-            const cell = document.elementFromPoint(e.clientX, e.clientY);
-            if (cell && cell.classList.contains('cell')) {
-                updateCell(cell);
-            }
-        }
-    });
-
-    function updateCell(cell) {
-        // セルがまだ更新されていない場合のみ更新
-        if (!cell.dataset.type || cell.dataset.type !== selectedTileType) {
-            cell.style.backgroundImage = `url('images/${selectedTileType}.png')`;
-            cell.dataset.type = selectedTileType;
+function initMap() {
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+        for (let x = 0; x < MAP_WIDTH; x++) {
+            mapCtx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
     }
+}
 
-    // マップの保存
-    document.getElementById('save-map').addEventListener('click', () => {
-        const mapData = Array.from(document.querySelectorAll('.cell')).map(cell => ({
-            x: cell.dataset.x,
-            y: cell.dataset.y,
-            type: cell.dataset.type || 'empty'
-        }));
-        const blob = new Blob([JSON.stringify(mapData)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'map.json';
-        a.click();
-        URL.revokeObjectURL(url);
-    });
-
-    // マップの読み込み
-    document.getElementById('load-map').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                try {
-                    const mapData = JSON.parse(event.target.result);
-                    console.log('Loaded map data:', mapData); // デバッグ用
-                    loadMap(mapData);
-                } catch (error) {
-                    console.error('Error parsing JSON:', error); // JSONパースエラー
-                }
-            };
-            reader.readAsText(file);
-        }
-    });
-
-    function loadMap(mapData) {
-        mapData.forEach(({ x, y, type }) => {
-            const cell = Array.from(document.querySelectorAll('.cell')).find(c => c.dataset.x === x && c.dataset.y === y);
-            if (cell) {
-                cell.style.backgroundImage = `url('images/${type}.png')`;
-                cell.dataset.type = type;
-            }
-        });
-    }
+tilesetCanvas.addEventListener('click', (e) => {
+    const rect = tilesetCanvas.getBoundingClientRect();
+    selectedTile.x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
+    selectedTile.y = Math.floor((e.clientY - rect.top) / TILE_SIZE);
+    
+    // 選択されたタイルを視覚的に表示
+    tilesetCtx.drawImage(tileset, 0, 0);
+    tilesetCtx.strokeStyle = 'red';
+    tilesetCtx.strokeRect(selectedTile.x * TILE_SIZE, selectedTile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 });
+
+mapCanvas.addEventListener('click', (e) => {
+    const rect = mapCanvas.getBoundingClientRect();
+    const x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
+    const y = Math.floor((e.clientY - rect.top) / TILE_SIZE);
+    
+    map[y][x] = selectedTile.y * (tileset.width / TILE_SIZE) + selectedTile.x;
+    drawMap();
+});
+
+function drawMap() {
+    mapCtx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+        for (let x = 0; x < MAP_WIDTH; x++) {
+            const tileIndex = map[y][x];
+            const tileX = (tileIndex % (tileset.width / TILE_SIZE)) * TILE_SIZE;
+            const tileY = Math.floor(tileIndex / (tileset.width / TILE_SIZE)) * TILE_SIZE;
+            mapCtx.drawImage(tileset, tileX, tileY, TILE_SIZE, TILE_SIZE, x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            mapCtx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+        }
+    }
+}
