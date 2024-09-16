@@ -3,34 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>マップエディタ</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>マップチップ画像のグリッド表示</title>
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(10, 50px); /* 10列のグリッド */
+            grid-gap: 1px; /* グリッド間の隙間 */
+        }
+
+        .grid img {
+            width: 50px; /* 各画像の幅 */
+            height: 50px; /* 各画像の高さ */
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>マップエディタ</h1>
-        <div class="controls">
-            <label for="tilesetInput">タイルセット画像を選択:</label>
-            <input type="file" id="tilesetInput" accept="image/*">
-        </div>
-        <div class="controls">
-            <label for="tilesetColumns">タイルセット横分割数:</label>
-            <input type="number" id="tilesetColumns" min="1" value="8">
-            <label for="tilesetRows">タイルセット縦分割数:</label>
-            <input type="number" id="tilesetRows" min="1" value="8">
-            <button onclick="updateTilesetDivision()">更新</button>
-        </div>
-        <div class="editor">
-            <div class="tileset-container">
-                <h2>タイルセット</h2>
-                <canvas id="tilesetCanvas"></canvas>
-            </div>
-            <div class="map-container">
-                <h2>マップ</h2>
-                <canvas id="mapCanvas"></canvas>
-            </div>
-        </div>
-    </div>
-    <script src="script.js"></script>
+
+<div class="grid">
+    <!-- マップチップ画像をここに挿入 -->
+    <img src="images/grass.png" alt="マップチップ1">
+    <img src="chip2.png" alt="マップチップ2">
+    <img src="chip3.png" alt="マップチップ3">
+    <img src="chip4.png" alt="マップチップ4">
+    <img src="chip5.png" alt="マップチップ5">
+    <!-- 必要に応じて画像を追加 -->
+</div>
+
 </body>
 </html>
