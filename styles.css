@@ -1,0 +1,51 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#editor-container {
+    margin-top: 20px;
+    position: relative;
+}
+
+#tile-map {
+    width: 320px;
+    height: 320px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    position: relative;
+}
+
+.tile {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    background-size: cover; /* 画像がタイルのサイズに合わせて表示される */
+    cursor: pointer;
+    position: absolute;
+}
+
+.tile[data-tile="grass"] {
+    background-image: url('https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2Fillustration.svg?v=1618177344016');
+}
+
+.tile[data-tile="water"] {
+    background-image: url('water.png');
+}
+
+.tile[data-tile="sand"] {
+    background-image: url('sand.png');
+}
+
+#tile-palette {
+    margin-top: 20px;
+}
+
+.tile.selected {
+    border: 2px solid #000;
+}
