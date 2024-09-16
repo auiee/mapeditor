@@ -38,15 +38,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // マウスムーブでセルの更新
     mapContainer.addEventListener('mousemove', (e) => {
         if (isDragging && selectedTileType) {
-            if (e.target.classList.contains('cell')) {
-                updateCell(e.target);
+            const cell = e.target;
+            if (cell.classList.contains('cell')) {
+                updateCell(cell);
             }
         }
     });
 
     function updateCell(cell) {
-        cell.style.backgroundImage = `url('images/${selectedTileType}.png')`;
-        cell.dataset.type = selectedTileType;
+        // セルがまだ更新されていない場合のみ更新
+        if (!cell.dataset.type || cell.dataset.type !== selectedTileType) {
+            cell.style.backgroundImage = `url('images/${selectedTileType}.png')`;
+            cell.dataset.type = selectedTileType;
+        }
     }
 
     // マップの保存
@@ -65,3 +69,4 @@ document.addEventListener('DOMContentLoaded', () => {
         URL.revokeObjectURL(url);
     });
 });
+
