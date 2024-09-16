@@ -1,17 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マップエディタ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-    <h1>マップエディタ</h1>
-    <div id="tiles">
-        <!-- マップチップの画像を表示 -->
-        <div class="tile" data-type="grass" style="background-image: url('images/grass.png');"></div>
-        <div class="tile" data-type="water" style="background-image: url('images/water.png');"></div>
-        <div class="tile" data-type="mountain" style="background-image: url('images/mountain.png');"></div>
+    <div class="container">
+        <h1>マップエディタ</h1>
+        <div class="editor">
+            <div class="tileset-container">
+                <h2>タイルセット</h2>
+                <canvas id="tilesetCanvas"></canvas>
+            </div>
+            <div class="map-container">
+                <h2>マップ</h2>
+                <canvas id="mapCanvas"></canvas>
+            </div>
+        </div>
     </div>
-    <div id="map-container">
-        <!-- マップグリッドをここに表示 -->
-    </div>
-    <button id="save-map">マップを保存</button>
-    <input type="file" id="load-map" accept=".json">
-    <label for="load-map">マップを読み込む</label>
     <script src="script.js"></script>
 </body>
-
+</html>
