@@ -14,6 +14,7 @@ function drawTileset() {
   // タイルサイズの計算
   const tileWidth = tileset.width / tilesetColumns;
   const tileHeight = tileset.height / tilesetRows;
+console.log(`Tileset columns: ${tilesetColumns}, rows: ${tilesetRows}`);
   
   // タイルセットの描画
   tilesetCtx.drawImage(tileset, 0, 0);
