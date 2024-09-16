@@ -81,8 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (file) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                const mapData = JSON.parse(event.target.result);
-                loadMap(mapData);
+                try {
+                    const mapData = JSON.parse(event.target.result);
+                    console.log('Loaded map data:', mapData); // デバッグ用
+                    loadMap(mapData);
+                } catch (error) {
+                    console.error('Error parsing JSON:', error); // JSONパースエラー
+                }
             };
             reader.readAsText(file);
         }
