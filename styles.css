@@ -12,8 +12,8 @@ body {
     height: 50px;
     margin: 5px;
     cursor: pointer;
-    text-align: center;
-    line-height: 50px;
+    background-size: cover;
+    background-position: center;
     border: 1px solid #ccc;
 }
 
@@ -31,4 +31,7 @@ body {
     border: 1px solid #ddd;
     box-sizing: border-box;
     background-color: #f0f0f0;
+    background-size: cover;
+    background-position: center;
 }
+
