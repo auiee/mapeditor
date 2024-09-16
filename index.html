@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>マップチップ画像のグリッド表示</title>
+    <title>マップチップ配置</title>
     <style>
         .grid {
             display: grid;
@@ -14,20 +14,44 @@
         .grid img {
             width: 50px; /* 各画像の幅 */
             height: 50px; /* 各画像の高さ */
+            cursor: pointer; /* クリック可能なカーソル */
         }
     </style>
 </head>
 <body>
 
-<div class="grid">
+<h2>マップチップを配置してください</h2>
+
+<div class="grid" id="mapGrid">
     <!-- マップチップ画像をここに挿入 -->
-    <img src="images/grass.png" alt="マップチップ1">
-    <img src="chip2.png" alt="マップチップ2">
-    <img src="chip3.png" alt="マップチップ3">
-    <img src="chip4.png" alt="マップチップ4">
-    <img src="chip5.png" alt="マップチップ5">
+    <img src="chip1.png" alt="マップチップ1" onclick="placeTile(event, 'chip1.png')">
+    <img src="chip2.png" alt="マップチップ2" onclick="placeTile(event, 'chip2.png')">
+    <img src="chip3.png" alt="マップチップ3" onclick="placeTile(event, 'chip3.png')">
+    <img src="chip4.png" alt="マップチップ4" onclick="placeTile(event, 'chip4.png')">
+    <img src="chip5.png" alt="マップチップ5" onclick="placeTile(event, 'chip5.png')">
     <!-- 必要に応じて画像を追加 -->
 </div>
+
+<script>
+    function placeTile(event, tileImage) {
+        const grid = document.getElementById('mapGrid');
+        const tile = document.createElement('img');
+        tile.src = tileImage;
+        tile.width = 50;
+        tile.height = 50;
+
+        // グリッド内のクリックした位置に画像を配置
+        const rect = grid.getBoundingClientRect();
+        const x = Math.floor((event.clientX - rect.left) / 50);
+        const y = Math.floor((event.clientY - rect.top) / 50);
+        
+        // 新しい画像を指定された位置に追加
+        const index = y * 10 + x; // グリッドのインデックス計算
+        if (index >= 0 && index < grid.children.length) {
+            grid.children[index].replaceWith(tile);
+        }
+    }
+</script>
 
 </body>
 </html>
