@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>マップチップ配置</title>
+    <title>マップチップ配置とグリッド描画</title>
     <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(10, 50px); /* 10列のグリッド */
             grid-gap: 1px; /* グリッド間の隙間 */
+            margin-bottom: 20px; /* グリッドとボタンの間の隙間 */
         }
 
         .grid img {
@@ -16,38 +23,75 @@
             height: 50px; /* 各画像の高さ */
             cursor: pointer; /* クリック可能なカーソル */
         }
+
+        .map {
+            display: grid;
+            grid-template-columns: repeat(10, 50px); /* 同じく10列のマップ */
+            grid-gap: 1px;
+            border: 1px solid #000; /* マップの境界線 */
+        }
+
+        .map img {
+            width: 50px;
+            height: 50px;
+        }
     </style>
 </head>
 <body>
 
 <h2>マップチップを配置してください</h2>
 
-<div class="grid" id="mapGrid">
+<div class="grid" id="chipGrid">
     <!-- マップチップ画像をここに挿入 -->
-    <img src="chip1.png" alt="マップチップ1" onclick="placeTile(event, 'chip1.png')">
-    <img src="chip2.png" alt="マップチップ2" onclick="placeTile(event, 'chip2.png')">
-    <img src="chip3.png" alt="マップチップ3" onclick="placeTile(event, 'chip3.png')">
-    <img src="chip4.png" alt="マップチップ4" onclick="placeTile(event, 'chip4.png')">
-    <img src="chip5.png" alt="マップチップ5" onclick="placeTile(event, 'chip5.png')">
-    <!-- 必要に応じて画像を追加 -->
+    <img src="chip1.png" alt="マップチップ1" onclick="setTile('chip1.png')">
+    <img src="chip2.png" alt="マップチップ2" onclick="setTile('chip2.png')">
+    <img src="chip3.png" alt="マップチップ3" onclick="setTile('chip3.png')">
+    <img src="chip4.png" alt="マップチップ4" onclick="setTile('chip4.png')">
+    <img src="chip5.png" alt="マップチップ5" onclick="setTile('chip5.png')">
+</div>
+
+<h2>マップをクリックして配置</h2>
+
+<div class="map" id="mapGrid" onclick="placeTile(event)">
+    <!-- マップは空の状態で初期化 -->
+    <img src="" alt="" style="display:none;">
+    <img src="" alt="" style="display:none;">
+    <img src="" alt="" style="display:none;">
+    <img src="" alt="" style="display:none;">
+    <img src="" alt="" style="display:none;">
+    <img src="" alt="" style="display:none;">
+    <img src="" alt="" style="display:none;">
+    <img src="" alt="" style="display:none;">
+    <img src="" alt="" style="display:none;">
+    <img src="" alt="" style="display:none;">
+    
+    <!-- 同様に他の空の画像を追加 -->
 </div>
 
 <script>
-    function placeTile(event, tileImage) {
-        const grid = document.getElementById('mapGrid');
-        const tile = document.createElement('img');
-        tile.src = tileImage;
-        tile.width = 50;
-        tile.height = 50;
+    let selectedTile = '';
 
-        // グリッド内のクリックした位置に画像を配置
+    function setTile(tileImage) {
+        selectedTile = tileImage; // 選択されたタイルを保存
+    }
+
+    function placeTile(event) {
+        if (!selectedTile) return; // タイルが選択されていない場合は何もしない
+
+        const grid = document.getElementById('mapGrid');
         const rect = grid.getBoundingClientRect();
+        
+        // クリックした位置からグリッド内のインデックスを計算
         const x = Math.floor((event.clientX - rect.left) / 50);
         const y = Math.floor((event.clientY - rect.top) / 50);
         
         // 新しい画像を指定された位置に追加
         const index = y * 10 + x; // グリッドのインデックス計算
         if (index >= 0 && index < grid.children.length) {
+            const tile = document.createElement('img');
+            tile.src = selectedTile;
+            tile.alt = '配置されたタイル';
+            
             grid.children[index].replaceWith(tile);
         }
     }
