@@ -16,10 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
     tiles.forEach(tile => {
         tile.addEventListener('click', () => {
             selectedTileType = tile.dataset.type;
+            tiles.forEach(t => t.classList.remove('selected')); // すべてのタイルの選択状態を解除
+            tile.classList.add('selected'); // 選択中のタイルにクラスを追加
         });
     });
 
-    // グリッドセルへのドラッグ&ドロップ
+    // グリッドセルへのクリック
     mapContainer.addEventListener('click', (e) => {
         if (e.target.classList.contains('cell') && selectedTileType) {
             e.target.style.backgroundImage = `url('images/${selectedTileType}.png')`;
@@ -43,4 +45,3 @@ document.addEventListener('DOMContentLoaded', () => {
         URL.revokeObjectURL(url);
     });
 });
-
