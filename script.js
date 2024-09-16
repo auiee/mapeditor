@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // マップチップの選択
     tiles.forEach(tile => {
-        tile.addEventListener('click', () => {
+        tile.addEventListener('mousedown', (e) => {
+            e.preventDefault(); // デフォルトのドラッグ動作を防止
             selectedTileType = tile.dataset.type;
             tiles.forEach(t => t.classList.remove('selected')); // すべてのタイルの選択状態を解除
             tile.classList.add('selected'); // 選択中のタイルにクラスを追加
@@ -38,8 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // マウスムーブでセルの更新
     mapContainer.addEventListener('mousemove', (e) => {
         if (isDragging && selectedTileType) {
-            const cell = e.target;
-            if (cell.classList.contains('cell')) {
+            const cell = document.elementFromPoint(e.clientX, e.clientY);
+            if (cell && cell.classList.contains('cell')) {
                 updateCell(cell);
             }
         }
