@@ -1,64 +1,74 @@
-const TILE_SIZE = 32;
-const MAP_WIDTH = 20;
-const MAP_HEIGHT = 15;
+let tilesetColumns = 8;
+let tilesetRows = 8;
 
-const tilesetCanvas = document.getElementById('tilesetCanvas');
-const mapCanvas = document.getElementById('mapCanvas');
-const tilesetCtx = tilesetCanvas.getContext('2d');
-const mapCtx = mapCanvas.getContext('2d');
-
-let tileset = new Image();
-tileset.src = 'images/grass.png'; // タイルセット画像のパスを指定してください
-tileset.onload = function() {
-    tilesetCanvas.width = tileset.width;
-    tilesetCanvas.height = tileset.height;
-    tilesetCtx.drawImage(tileset, 0, 0);
-    
-    mapCanvas.width = MAP_WIDTH * TILE_SIZE;
-    mapCanvas.height = MAP_HEIGHT * TILE_SIZE;
-    initMap();
-};
-
-let selectedTile = { x: 0, y: 0 };
-let map = Array(MAP_HEIGHT).fill().map(() => Array(MAP_WIDTH).fill(0));
-
-function initMap() {
-    for (let y = 0; y < MAP_HEIGHT; y++) {
-        for (let x = 0; x < MAP_WIDTH; x++) {
-            mapCtx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-        }
-    }
+function updateTilesetDivision() {
+  tilesetColumns = parseInt(document.getElementById('tilesetColumns').value);
+  tilesetRows = parseInt(document.getElementById('tilesetRows').value);
+  drawTileset();
 }
 
+function drawTileset() {
+  // タイルセットキャンバスのクリア
+  tilesetCtx.clearRect(0, 0, tilesetCanvas.width, tilesetCanvas.height);
+  
+  // タイルサイズの計算
+  const tileWidth = tileset.width / tilesetColumns;
+  const tileHeight = tileset.height / tilesetRows;
+  
+  // タイルセットの描画
+  tilesetCtx.drawImage(tileset, 0, 0);
+  
+  // グリッドの描画
+  tilesetCtx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+  for (let x = 0; x <= tileset.width; x += tileWidth) {
+    tilesetCtx.beginPath();
+    tilesetCtx.moveTo(x, 0);
+    tilesetCtx.lineTo(x, tileset.height);
+    tilesetCtx.stroke();
+  }
+  for (let y = 0; y <= tileset.height; y += tileHeight) {
+    tilesetCtx.beginPath();
+    tilesetCtx.moveTo(0, y);
+    tilesetCtx.lineTo(tileset.width, y);
+    tilesetCtx.stroke();
+  }
+}
+
+// タイルの選択処理を修正
 tilesetCanvas.addEventListener('click', (e) => {
-    const rect = tilesetCanvas.getBoundingClientRect();
-    selectedTile.x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
-    selectedTile.y = Math.floor((e.clientY - rect.top) / TILE_SIZE);
-    
-    // 選択されたタイルを視覚的に表示
-    tilesetCtx.drawImage(tileset, 0, 0);
-    tilesetCtx.strokeStyle = 'red';
-    tilesetCtx.strokeRect(selectedTile.x * TILE_SIZE, selectedTile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  const rect = tilesetCanvas.getBoundingClientRect();
+  const tileWidth = tileset.width / tilesetColumns;
+  const tileHeight = tileset.height / tilesetRows;
+  selectedTile.x = Math.floor((e.clientX - rect.left) / tileWidth);
+  selectedTile.y = Math.floor((e.clientY - rect.top) / tileHeight);
+  
+  drawTileset();
+  // 選択されたタイルを視覚的に表示
+  tilesetCtx.strokeStyle = 'red';
+  tilesetCtx.strokeRect(selectedTile.x * tileWidth, selectedTile.y * tileHeight, tileWidth, tileHeight);
 });
 
+// マップへのタイル配置処理も修正が必要です
 mapCanvas.addEventListener('click', (e) => {
-    const rect = mapCanvas.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
-    const y = Math.floor((e.clientY - rect.top) / TILE_SIZE);
-    
-    map[y][x] = selectedTile.y * (tileset.width / TILE_SIZE) + selectedTile.x;
-    drawMap();
+  const rect = mapCanvas.getBoundingClientRect();
+  const x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
+  const y = Math.floor((e.clientY - rect.top) / TILE_SIZE);
+  
+  map[y][x] = selectedTile.y * tilesetColumns + selectedTile.x;
+  drawMap();
 });
 
 function drawMap() {
-    mapCtx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
-    for (let y = 0; y < MAP_HEIGHT; y++) {
-        for (let x = 0; x < MAP_WIDTH; x++) {
-            const tileIndex = map[y][x];
-            const tileX = (tileIndex % (tileset.width / TILE_SIZE)) * TILE_SIZE;
-            const tileY = Math.floor(tileIndex / (tileset.width / TILE_SIZE)) * TILE_SIZE;
-            mapCtx.drawImage(tileset, tileX, tileY, TILE_SIZE, TILE_SIZE, x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-            mapCtx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-        }
+  mapCtx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+  const tileWidth = tileset.width / tilesetColumns;
+  const tileHeight = tileset.height / tilesetRows;
+  for (let y = 0; y < MAP_HEIGHT; y++) {
+    for (let x = 0; x < MAP_WIDTH; x++) {
+      const tileIndex = map[y][x];
+      const tileX = (tileIndex % tilesetColumns) * tileWidth;
+      const tileY = Math.floor(tileIndex / tilesetColumns) * tileHeight;
+      mapCtx.drawImage(tileset, tileX, tileY, tileWidth, tileHeight, x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+      mapCtx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     }
+  }
 }
