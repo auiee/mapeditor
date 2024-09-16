@@ -74,4 +74,27 @@ document.addEventListener('DOMContentLoaded', () => {
         a.click();
         URL.revokeObjectURL(url);
     });
+
+    // マップの読み込み
+    document.getElementById('load-map').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const mapData = JSON.parse(event.target.result);
+                loadMap(mapData);
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    function loadMap(mapData) {
+        mapData.forEach(({ x, y, type }) => {
+            const cell = Array.from(document.querySelectorAll('.cell')).find(c => c.dataset.x === x && c.dataset.y === y);
+            if (cell) {
+                cell.style.backgroundImage = `url('images/${type}.png')`;
+                cell.dataset.type = type;
+            }
+        });
+    }
 });
