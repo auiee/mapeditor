@@ -13,7 +13,13 @@
             <div class="tileset-container">
                 <h2>タイルセット</h2>
                 <canvas id="tilesetCanvas"></canvas>
-            </div>
+                <div>
+  <label for="tilesetColumns">タイルセット横分割数:</label>
+  <input type="number" id="tilesetColumns" min="1" value="8">
+  <label for="tilesetRows">タイルセット縦分割数:</label>
+  <input type="number" id="tilesetRows" min="1" value="8">
+  <button onclick="updateTilesetDivision()">更新</button>
+</div>            </div>
             <div class="map-container">
                 <h2>マップ</h2>
                 <canvas id="mapCanvas"></canvas>
