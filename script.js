@@ -30,12 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.add('dragging'); // ドラッグ中のカーソルスタイルを適用
             updateCell(e.target);
         }
+        e.preventDefault(); // グリッドのドラッグ動作を防止
     });
 
     // マウスアップでドラッグ終了
-    document.addEventListener('mouseup', () => {
-        isDragging = false;
-        document.body.classList.remove('dragging'); // ドラッグ終了後にカーソルスタイルを元に戻す
+    document.addEventListener('mouseup', (e) => {
+        if (isDragging) {
+            isDragging = false;
+            document.body.classList.remove('dragging'); // ドラッグ終了後にカーソルスタイルを元に戻す
+        }
     });
 
     // マウスムーブでセルの更新
@@ -72,5 +75,3 @@ document.addEventListener('DOMContentLoaded', () => {
         URL.revokeObjectURL(url);
     });
 });
-
-
