@@ -1,52 +1,34 @@
-
-/* styles.css */
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
-#editor-container {
-    margin-top: 20px;
-    position: relative;
-}
-
-#tile-map {
-    width: 320px;
-    height: 320px;
-    background-color: #eee;
-    border: 1px solid #ccc;
-    position: relative;
+#tiles {
+    margin-bottom: 20px;
 }
 
 .tile {
-    width: 32px;
-    height: 32px;
     display: inline-block;
-    background-size: cover; /* 画像がタイルのサイズに合わせて表示される */
+    width: 50px;
+    height: 50px;
+    margin: 5px;
     cursor: pointer;
-    position: absolute;
+    text-align: center;
+    line-height: 50px;
+    border: 1px solid #ccc;
 }
 
-.tile[data-tile="grass"] {
-    background-image: url('grass.png');
+#map-container {
+    display: grid;
+    grid-template-columns: repeat(10, 50px);
+    grid-template-rows: repeat(10, 50px);
+    gap: 1px;
+    border: 1px solid #ccc;
 }
 
-.tile[data-tile="water"] {
-    background-image: url('water.png');
-}
-
-.tile[data-tile="sand"] {
-    background-image: url('sand.png');
-}
-
-#tile-palette {
-    margin-top: 20px;
-}
-
-.tile.selected {
-    border: 2px solid #000;
+.cell {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    background-color: #f0f0f0;
 }
