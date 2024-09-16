@@ -8,15 +8,16 @@
 </head>
 <body>
     <h1>マップエディタ</h1>
-    <div id="editor-container">
-        <div id="tile-map"></div>
+    <div id="tiles">
+        <!-- マップチップをここに追加 -->
+        <div class="tile" data-type="grass" style="background-color: lightgreen;">草</div>
+        <div class="tile" data-type="water" style="background-color: lightblue;">水</div>
+        <div class="tile" data-type="mountain" style="background-color: gray;">山</div>
     </div>
-    <div id="tile-palette">
-        <h2>タイルパレット</h2>
-        <div class="tile" data-tile="grass"></div>
-        <div class="tile" data-tile="water"></div>
-        <div class="tile" data-tile="sand"></div>
+    <div id="map-container">
+        <!-- マップグリッドをここに表示 -->
     </div>
+    <button id="save-map">マップを保存</button>
     <script src="script.js"></script>
 </body>
 </html>
