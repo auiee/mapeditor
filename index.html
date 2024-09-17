@@ -3,22 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RPGマップエディタ（レイヤー機能付き）</title>
+    <title>RPGマップエディタ</title>
     <style>
+      .position-adjustment {
+        width: 340px; /* 横幅100ピクセル */
+        height: 50px; /* 高さ50ピクセル */
+        background-color: lightcoral;
+      }
+
       #mapCanvas {
         border: 1px solid black;
+        margin: 0 360px 0 0; /* 外部のスペース */
+      }
+      #toolContainer {
+        position: fixed;
+        top: 10px; /* 画面の上から10px */
+        right: 10px; /* 画面の右から10px */
+        overflow-y: auto; /* 縦方向のスクロールを許可 */
+        overflow-x: hidden; /* 横方向のスクロールを禁止 */
+        padding: 10px;
+        box-sizing: border-box; /* パディングを含むサイズ計算 */
       }
       #paletteContainer {
         width: 320px;
         height: 400px;
-        overflow-y: auto;
         border: 1px solid #ccc;
+        background-color: rgb(245, 222, 222);
+        color: white;
+        font-size: 18px;
+        overflow: scroll;
       }
+
       #palette {
         display: flex;
         flex-wrap: wrap;
       }
       #palette img {
+        overflow-y: auto; /* 縦方向のスクロールを許可 */
         width: 32px;
         height: 32px;
         margin: 2px;
@@ -53,8 +74,6 @@
     </style>
   </head>
   <body>
-    <h1>RPGマップエディタ（レイヤー機能付き）</h1>
-
     <div>
       <label for="mapWidth">マップの幅:</label>
       <input type="number" id="mapWidth" value="20" min="1" />
@@ -68,17 +87,18 @@
     <div>
       <input type="file" id="folderInput" webkitdirectory directory multiple />
     </div>
-
-    <div id="paletteContainer">
-      <div id="palette"></div>
-    </div>
-    <button id="saveButton">マップを保存</button>
-    <button id="loadButton">マップを読み込む</button>
-    <input type="file" id="loadInput" style="display: none" />
-    <button id="eraserButton">消しゴムモード</button>
-    <button id="addLayerButton">レイヤーを追加</button>
-    <div id="layerlistContainer">
-      <div id="layersList"></div>
+    <div id="toolContainer">
+      <div id="paletteContainer">
+        <div id="palette"></div>
+      </div>
+      <button id="saveButton">マップを保存</button><br />
+      <button id="loadButton">マップを読み込む</button>
+      <input type="file" id="loadInput" style="display: none" /><br />
+      <button id="eraserButton">消しゴムモード</button><br />
+      <button id="addLayerButton">レイヤーを追加</button><br />
+      <div id="layerlistContainer">
+        <div id="layersList"></div>
+      </div>
     </div>
     <br />
     <canvas id="mapCanvas" width="640" height="480"></canvas>
