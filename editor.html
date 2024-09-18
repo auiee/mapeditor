@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RPGマップエディタ</title>
     <style>
-      
       body {
         user-select: none; /* テキスト選択を防ぐ */
         overflow: hidden;
@@ -16,14 +15,14 @@
         object-fit: cover; /* 画像のアスペクト比を維持 */
       }
       .button {
-    background-color: rgb(207, 246, 235); /* ボタンの背景色 */
-    border: 2px solid #ADD8E6; /* 薄い青色の枠線 */
-    font-size: 16px; /* テキストサイズ */
+        background-color: rgb(207, 246, 235); /* ボタンの背景色 */
+        border: 2px solid #add8e6; /* 薄い青色の枠線 */
+        font-size: 16px; /* テキストサイズ */
       }
 
-.button:hover {
-      background-color: rgb(243, 255, 251); /* ボタンの背景色 */
-}
+      .button:hover {
+        background-color: rgb(243, 255, 251); /* ボタンの背景色 */
+      }
 
       #dragElement {
         position: absolute;
@@ -128,7 +127,7 @@
     </div>
     <br />
     <button id="toggleButton" class="button">
-      <img src="icon/pen.png" alt="add" class="button-img">
+      <img src="icon/pen.png" alt="add" class="button-img" />
     </button>
 
     <div id="dragElement">
@@ -196,11 +195,13 @@
       toggleButton.onclick = function () {
         isDraggingEnabled = !isDraggingEnabled;
         if (isDraggingEnabled) {
-          toggleButton.innerHTML = '<img src="icon/toggle.png" alt="toggle" class="button-img">';
+          toggleButton.innerHTML =
+            '<img src="icon/toggle.png" alt="toggle" class="button-img">';
           dragElement.style.cursor = "move";
           mapCanvas.style.pointerEvents = "none";
         } else {
-           toggleButton.innerHTML = '<img src="icon/pen.png" alt="toggle-a" class="button-img">';
+          toggleButton.innerHTML =
+            '<img src="icon/pen.png" alt="toggle-a" class="button-img">';
           dragElement.style.cursor = "default";
           mapCanvas.style.pointerEvents = "auto";
         }
@@ -296,6 +297,20 @@
         }
       });
 
+      function encodeImageAsBase64(imageUrl, callback) {
+        const img = new Image();
+        img.crossOrigin = "Anonymous"; // Allow cross-origin image loading
+        img.onload = function () {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          callback(canvas.toDataURL("image/png"));
+        };
+        img.src = imageUrl;
+      }
+
       folderInput.addEventListener("change", (event) => {
         const files = event.target.files;
         tilesetData = [];
@@ -306,42 +321,49 @@
 
         for (let file of files) {
           if (file.type.startsWith("image/")) {
-            const img = new Image();
-            img.onload = () => {
-              const resizedSrc = resizeImage(img, tileSize, tileSize);
-              const paletteImg = document.createElement("img");
-              paletteImg.src = resizedSrc;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              encodeImageAsBase64(e.target.result, (base64Image) => {
+                const paletteImg = document.createElement("img");
+                paletteImg.src = base64Image;
 
-              palette.appendChild(paletteImg);
-              paletteImg.onclick = () => selectTile(paletteImg);
+                palette.appendChild(paletteImg);
+                paletteImg.onclick = () => selectTile(paletteImg);
 
-              tilesetData.push({
-                name: file.name,
-                src: resizedSrc,
+                tilesetData.push({
+                  name: file.name,
+                  src: base64Image,
+                });
+
+                const tileImgIndex = tilesetData.length - 1;
+                const tileImg = new Image();
+                tileImg.src = base64Image;
+
+                tileImg.onload = () => {
+                  tileImages[tileImgIndex] = tileImg;
+                  loadedImagesCount++;
+                  if (loadedImagesCount === totalImagesCount) {
+                    drawLayers();
+                  }
+                };
               });
-
-              const tileImgIndex = tilesetData.length - 1;
-              const tileImg = new Image();
-              tileImg.src = resizedSrc;
-
-              tileImg.onload = () => {
-                tileImages[tileImgIndex] = tileImg;
-                loadedImagesCount++;
-                if (loadedImagesCount === totalImagesCount) {
-                  drawLayers();
-                }
-              };
             };
-            img.src = URL.createObjectURL(file);
+            reader.readAsDataURL(file);
           }
         }
       });
-
       function selectTile(img) {
         selectedTile = img.src;
         [...palette.children].forEach((child) => {
           child.classList.toggle("selected", child === img);
         });
+
+        // Switch to pencil mode when a tile is selected
+        if (isEraserMode) {
+          isEraserMode = false;
+          eraserButton.classList.remove("selected");
+          pencilButton.classList.add("selected");
+        }
       }
 
       function draw(e) {
@@ -397,7 +419,10 @@
       });
 
       saveButton.addEventListener("click", () => {
-        const json = JSON.stringify(layers);
+        const json = JSON.stringify({
+          layers: layers,
+          tilesetData: tilesetData,
+        });
         const blob = new Blob([json], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -416,9 +441,52 @@
         if (file) {
           const reader = new FileReader();
           reader.onload = (e) => {
-            const json = e.target.result;
-            layers = JSON.parse(json);
+            const json = JSON.parse(e.target.result);
+            layers = json.layers;
+            tilesetData = json.tilesetData;
+
+            tileImages = {};
+            palette.innerHTML = ""; // Clear the existing palette
+            tilesetData.forEach((tile, index) => {
+              const paletteImg = document.createElement("img");
+              paletteImg.src = tile.src;
+              palette.appendChild(paletteImg);
+              paletteImg.onclick = () => selectTile(paletteImg);
+
+              const tileImg = new Image();
+              tileImg.src = tile.src;
+              tileImg.onload = () => {
+                tileImages[index] = tileImg;
+
+                // Automatically select the first tile once it is loaded
+                if (index === 0) {
+                  selectTile(paletteImg);
+                }
+              };
+            });
+
             setActiveLayer(0);
+
+            // Ensure eraser mode is reset after loading
+            isEraserMode = false;
+            eraserButton.classList.remove("selected");
+            pencilButton.classList.add("selected");
+
+            // Update the canvas after the images have been loaded
+            // To ensure all images are loaded before updating the canvas
+            const imagesLoaded =
+              Object.keys(tileImages).length === tilesetData.length;
+            if (imagesLoaded) {
+              drawLayers();
+            } else {
+              // Set up a check to redraw layers once all images are loaded
+              const interval = setInterval(() => {
+                if (Object.keys(tileImages).length === tilesetData.length) {
+                  clearInterval(interval);
+                  drawLayers();
+                }
+              }, 100);
+            }
           };
           reader.readAsText(file);
         }
