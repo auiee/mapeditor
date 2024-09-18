@@ -43,7 +43,7 @@
         z-index: 10;
       }
       #paletteContainer {
-        margin: 0 0 10px 0;
+        margin: 10px 0 0 0;
         width: 320px;
         height: 65%;
         border: 1px solid #ccc;
@@ -70,7 +70,6 @@
         height: 120px; /* Fixed height */
         overflow-y: auto; /* Enable vertical scrolling if needed */
         background-color: lightblue;
-        margin: 10px 0 0 0;
         padding: 5px;
         border: 1px solid;
         font-size: 16px;
@@ -81,11 +80,12 @@
       #layersList div {
         cursor: pointer;
         padding: 5px;
-        border: 1px solid #ccc;
+        border: 2px solid #a2bab3;
         margin-bottom: 5px;
+        background-color: #c1e5e5;
       }
       #layersList div.active {
-        background-color: #d7eeef;
+        background-color: #e4f5f7;
       }
     </style>
   </head>
@@ -102,9 +102,6 @@
       <input type="file" id="folderInput" webkitdirectory directory multiple />
     </div>
     <div id="toolContainer">
-      <div id="paletteContainer">
-        <div id="palette"></div>
-      </div>
       <button id="saveButton" class="button">
         <img src="icon/down.png" alt="down" class="button-img" />
       </button>
@@ -121,6 +118,9 @@
       <button id="addLayerButton" class="button">
         <img src="icon/add.png" alt="add" class="button-img" />
       </button>
+      <div id="paletteContainer">
+        <div id="palette"></div>
+      </div>
       <br />
       <div id="layerlistContainer">
         <div id="layersList"></div>
@@ -197,12 +197,12 @@
         isDraggingEnabled = !isDraggingEnabled;
         if (isDraggingEnabled) {
           toggleButton.innerHTML =
-            '<img src="icon/toggle.png" alt="toggle" class="button-img">';
+            '<img src="icon/toggle.png" alt="move" class="button-img">';
           dragElement.style.cursor = "move";
           mapCanvas.style.pointerEvents = "none";
         } else {
           toggleButton.innerHTML =
-            '<img src="icon/pen.png" alt="toggle-a" class="button-img">';
+            '<img src="icon/pen.png" alt="pen" class="button-img">';
           dragElement.style.cursor = "default";
           mapCanvas.style.pointerEvents = "auto";
         }
