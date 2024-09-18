@@ -423,6 +423,8 @@
         const json = JSON.stringify({
           layers: layers,
           tilesetData: tilesetData,
+          mapWidth: mapWidth, // 追加: マップの幅
+          mapHeight: mapHeight, // 追加: マップの高さ
         });
         const blob = new Blob([json], { type: "application/json" });
         const url = URL.createObjectURL(blob);
@@ -446,8 +448,15 @@
             layers = json.layers;
             tilesetData = json.tilesetData;
 
+            // マップのサイズを適用
+            mapWidth = json.mapWidth; // 読み込んだマップの幅
+            mapHeight = json.mapHeight; // 読み込んだマップの高さ
+
+            // キャンバスのサイズを設定
+            mapCanvas.width = mapWidth * tileSize;
+            mapCanvas.height = mapHeight * tileSize;
+
             tileImages = {};
-            palette.innerHTML = ""; // Clear the existing palette
             tilesetData.forEach((tile, index) => {
               const paletteImg = document.createElement("img");
               paletteImg.src = tile.src;
@@ -459,7 +468,7 @@
               tileImg.onload = () => {
                 tileImages[index] = tileImg;
 
-                // Automatically select the first tile once it is loaded
+                // 最初のタイルを自動的に選択
                 if (index === 0) {
                   selectTile(paletteImg);
                 }
@@ -468,19 +477,17 @@
 
             setActiveLayer(0);
 
-            // Ensure eraser mode is reset after loading
+            // エラーモードのリセット
             isEraserMode = false;
             eraserButton.classList.remove("selected");
             pencilButton.classList.add("selected");
 
-            // Update the canvas after the images have been loaded
-            // To ensure all images are loaded before updating the canvas
+            // キャンバスを更新
             const imagesLoaded =
               Object.keys(tileImages).length === tilesetData.length;
             if (imagesLoaded) {
               drawLayers();
             } else {
-              // Set up a check to redraw layers once all images are loaded
               const interval = setInterval(() => {
                 if (Object.keys(tileImages).length === tilesetData.length) {
                   clearInterval(interval);
@@ -492,6 +499,47 @@
           reader.readAsText(file);
         }
       });
+folderInput.addEventListener("change", (event) => {
+  const files = event.target.files;
+  let loadedImagesCount = 0;
+  const totalImagesCount = files.length;
+
+  for (let file of files) {
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        encodeImageAsBase64(e.target.result, (base64Image) => {
+          const tileData = {
+            name: file.name,
+            src: base64Image,
+          };
+
+          // 新しいタイルをパレットに追加
+          const paletteImg = document.createElement("img");
+          paletteImg.src = base64Image;
+          palette.appendChild(paletteImg);
+          paletteImg.onclick = () => selectTile(paletteImg);
+
+          const tileImgIndex = tilesetData.length;
+          const tileImg = new Image();
+          tileImg.src = base64Image;
+
+          tileImg.onload = () => {
+            tileImages[tileImgIndex] = tileImg;
+            tilesetData.push(tileData); // 新しいタイルデータを追加
+
+            loadedImagesCount++;
+            if (loadedImagesCount === totalImagesCount) {
+              drawLayers(); // 全ての画像が読み込まれた後に描画
+            }
+          };
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+});
+
     </script>
   </body>
 </html>
