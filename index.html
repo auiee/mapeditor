@@ -465,12 +465,11 @@
           if (selectedTile) selectedTile.classList.remove("selected");
 
           selectedTile = null;
-
-          eraserButton.textContent = "<img src="icon/eraser.png" alt="eraser" class="button-img">";
+          eraserButton.innerHTML = '<img src="icon/eraser.png" alt="eraser" class="button-img">';
         } else {
           if (previousTile) selectTile(previousTile);
 
-          eraserButton.textContent = "<img src="icon/eraser.png" alt="eraser" class="button-img">";
+          eraserButton.innerHTML = "<img src="icon/eraser.png" alt="eraser" class="button-img">";
         }
       }
 
