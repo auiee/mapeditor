@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RPGマップエディタ</title>
     <style>
+      
       body {
         user-select: none; /* テキスト選択を防ぐ */
         overflow: hidden;
@@ -14,6 +15,21 @@
         height: 32px; /* 高さを指定 */
         object-fit: cover; /* 画像のアスペクト比を維持 */
       }
+      button {
+    background-color: white; /* ボタンの背景色 */
+    border: 2px solid #ADD8E6; /* 薄い青色の枠線 */
+    color: #000080; /* テキストの色 (濃い青色) */
+    padding: 10px 20px; /* ボタンの内側の余白 */
+    font-size: 16px; /* テキストサイズ */
+    cursor: pointer; /* カーソルをポインタにする */
+    transition: border-color 0.3s, color 0.3s; /* ホバー時のアニメーション */
+      }
+
+.blue-button:hover {
+    border-color: #000080; /* ホバー時の枠線の色 (濃い青色) */
+    color: #ADD8E6; /* ホバー時のテキストの色 (薄い青色) */
+}
+
       #dragElement {
         position: absolute;
         user-select: none; /* テキスト選択を防ぐ */
