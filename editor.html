@@ -116,7 +116,9 @@
       </div>
     </div>
     <br />
-    <button id="toggleButton">ドラッグモードをオン</button>
+    <button id="toggleButton">
+      <img src="icon/toggle.png" alt="add" class="button-img">
+    </button>
 
     <div id="dragElement">
       <canvas id="mapCanvas" width="640" height="480"></canvas>
@@ -183,11 +185,11 @@
       toggleButton.onclick = function () {
         isDraggingEnabled = !isDraggingEnabled;
         if (isDraggingEnabled) {
-          toggleButton.textContent = "ドラッグモードをオフ";
+          toggleButton.innerHTML = "<img src="icon/toggle-a.png" alt="add" class="button-img">";
           dragElement.style.cursor = "move";
           mapCanvas.style.pointerEvents = "none";
         } else {
-          toggleButton.textContent = "ドラッグモードをオン";
+          toggleButton.innerHTML = "<img src="icon/toggle.png" alt="add" class="button-img">";
           dragElement.style.cursor = "default";
           mapCanvas.style.pointerEvents = "auto";
         }
@@ -279,7 +281,7 @@
 
           drawLayers();
         } else {
-          alert("幅と高さは1以上の整数で指定してください。");
+          alert("1以上の整数で指定してください。");
         }
       });
 
