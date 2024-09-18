@@ -33,20 +33,20 @@
       }
       #toolContainer {
         position: fixed;
-        top: 10px; /* 画面の上から10px */
-        right: 10px; /* 画面の右から10px */
-        overflow-y: auto; /* 縦方向のスクロールを許可 */
-        overflow-x: hidden; /* 横方向のスクロールを禁止 */
+        top: 0px; /* 画面の上から10px */
+        right: 0px; /* 画面の右から10px */
         padding: 10px;
+        height: 100%;
         box-sizing: border-box; /* パディングを含むサイズ計算 */
+        border: 1px solid #8e8e8e;
+        background-color: rgb(224, 224, 224);
       }
       #paletteContainer {
-        margin:10px;
+        margin: 0 0 10px 0;
         width: 320px;
-        height: 400px;
+        height: 65%;
         border: 1px solid #ccc;
         background-color: rgb(245, 222, 222);
-        color: white;
         font-size: 18px;
         overflow: scroll;
       }
@@ -66,18 +66,16 @@
         border: 2px solid red;
       }
       #layerlistContainer {
-        height: 100px; /* Fixed height */
+        height: 120px; /* Fixed height */
         overflow-y: auto; /* Enable vertical scrolling if needed */
         background-color: lightblue;
-        margin:10px;
+        margin: 10px 0 0 0;
         padding: 5px;
         border: 1px solid;
         font-size: 16px;
-        display: inline-block; /* Adjust width to fit content */
       }
       #layersList {
         margin-top: 10px;
-        width: 100px;
       }
       #layersList div {
         cursor: pointer;
