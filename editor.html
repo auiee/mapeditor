@@ -15,17 +15,14 @@
         height: 32px; /* 高さを指定 */
         object-fit: cover; /* 画像のアスペクト比を維持 */
       }
-      button {
+      .button {
     background-color: white; /* ボタンの背景色 */
     border: 2px solid #ADD8E6; /* 薄い青色の枠線 */
     color: #000080; /* テキストの色 (濃い青色) */
-    padding: 10px 20px; /* ボタンの内側の余白 */
     font-size: 16px; /* テキストサイズ */
-    cursor: pointer; /* カーソルをポインタにする */
-    transition: border-color 0.3s, color 0.3s; /* ホバー時のアニメーション */
       }
 
-.blue-button:hover {
+.button:hover {
     border-color: #000080; /* ホバー時の枠線の色 (濃い青色) */
     color: #ADD8E6; /* ホバー時のテキストの色 (薄い青色) */
 }
@@ -110,20 +107,20 @@
       <div id="paletteContainer">
         <div id="palette"></div>
       </div>
-      <button id="saveButton">
+      <button id="saveButton" class="button">
         <img src="icon/down.png" alt="down" class="button-img" />
       </button>
-      <button id="loadButton">
+      <button id="loadButton" class="button">
         <img src="icon/up.png" alt="up" class="button-img" />
       </button>
       <input type="file" id="loadInput" style="display: none" />
-      <button id="eraserButton">
+      <button id="eraserButton" class="button">
         <img src="icon/eraser.png" alt="eraser" class="button-img" />
       </button>
-      <button id="pencilButton">
+      <button id="pencilButton" class="button">
         <img src="icon/pen.png" alt="pen" class="button-img" />
       </button>
-      <button id="addLayerButton">
+      <button id="addLayerButton" class="button">
         <img src="icon/add.png" alt="add" class="button-img" />
       </button>
       <br />
@@ -132,7 +129,7 @@
       </div>
     </div>
     <br />
-    <button id="toggleButton">
+    <button id="toggleButton" class="button">
       <img src="icon/toggle.png" alt="add" class="button-img">
     </button>
 
