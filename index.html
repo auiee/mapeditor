@@ -5,15 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RPGマップエディタ</title>
     <style>
-      .position-adjustment {
-        width: 340px; /* 横幅100ピクセル */
-        height: 50px; /* 高さ50ピクセル */
-        background-color: lightcoral;
+      body {
+        user-select: none; /* テキスト選択を防ぐ */
+        overflow: hidden;
       }
 
+      #dragElement {
+        width: 300px;
+        height: 300px;
+        position: absolute;
+        user-select: none; /* テキスト選択を防ぐ */
+      }
       #mapCanvas {
         border: 1px solid black;
-        margin: 0 360px 0 0; /* 外部のスペース */
       }
       #toolContainer {
         position: fixed;
@@ -101,7 +105,11 @@
       </div>
     </div>
     <br />
-    <canvas id="mapCanvas" width="640" height="480"></canvas>
+    <button id="toggleButton">ドラッグモードをオン</button>
+
+    <div id="dragElement">
+      <canvas id="mapCanvas" width="640" height="480"></canvas>
+    </div>
     <br />
 
     <script>
@@ -120,7 +128,10 @@
       const mapWidthInput = document.getElementById("mapWidth");
       const mapHeightInput = document.getElementById("mapHeight");
       const createMapButton = document.getElementById("createMapButton");
+      const canvas = document.getElementById("canvas");
+      const toggleButton = document.getElementById("toggleButton");
 
+      let isDraggingEnabled = false;
       let selectedTile = null;
       let previousTile = null;
       let isEraserMode = false;
@@ -132,6 +143,48 @@
       let activeLayerIndex = 0; // アクティブなレイヤーのインデックス
       let tilesetData = []; // タイルセットデータ
       let tileImages = {}; // タイル画像
+
+      function onMouseMove(event) {
+        if (!isDraggingEnabled) return;
+        moveAt(event.pageX, event.pageY);
+      }
+
+      function moveAt(pageX, pageY) {
+        dragElement.style.left = pageX - shiftX + "px";
+        dragElement.style.top = pageY - shiftY + "px";
+      }
+
+      let shiftX, shiftY;
+
+      dragElement.onmousedown = function (event) {
+        if (!isDraggingEnabled) return;
+        event.preventDefault();
+
+        shiftX = event.clientX - dragElement.getBoundingClientRect().left;
+        shiftY = event.clientY - dragElement.getBoundingClientRect().top;
+
+        moveAt(event.pageX, event.pageY);
+
+        document.addEventListener("mousemove", onMouseMove);
+
+        dragElement.onmouseup = function () {
+          document.removeEventListener("mousemove", onMouseMove);
+          dragElement.onmouseup = null;
+        };
+      };
+
+      toggleButton.onclick = function () {
+        isDraggingEnabled = !isDraggingEnabled;
+        if (isDraggingEnabled) {
+          toggleButton.textContent = "ドラッグモードをオフ";
+          dragElement.style.cursor = "move";
+          canvas.style.pointerEvents = "none"; // ドラッグモード中はキャンバスの操作を無効に
+        } else {
+          toggleButton.textContent = "ドラッグモードをオン";
+          dragElement.style.cursor = "default";
+          canvas.style.pointerEvents = "auto"; // ドラッグモードがオフのときはキャンバスの操作を有効に
+        }
+      };
 
       function resizeImage(img, width, height) {
         const canvas = document.createElement("canvas");
@@ -289,9 +342,8 @@
       mapCanvas.addEventListener("mouseout", () => {
         isDrawing = false;
       });
-
       function draw(e) {
-        if (!isDrawing) return;
+        if (!isDrawing || isDraggingEnabled) return; // ドラッグモード中は描画しない
 
         const rect = mapCanvas.getBoundingClientRect();
         const x = Math.floor((e.clientX - rect.left) / tileSize);
