@@ -1,0 +1,175 @@
+/* スクロールバー全体のスタイル */
+::-webkit-scrollbar {
+  width: 8px; /* スクロールバーの幅 */
+  height: 8px;
+}
+
+/* スクロールバーのトラック部分（背景） */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* 背景色 */
+}
+
+/* スクロールバーのサム部分（ドラッグできる部分） */
+::-webkit-scrollbar-thumb {
+  background: #666679; /* 背景色 */
+  border-radius: 2px; /* 角の丸み */
+}
+
+/* スクロールバーのサム部分のホバー時のスタイル */
+::-webkit-scrollbar-thumb:hover {
+  background: #747482; /* ホバー時の背景色 */
+}
+
+    input.size {
+      background-color: #647890; /* 背景色を薄い青に設定 */
+      border: 1px solid #00796b; /* 枠線の色を設定 */
+      padding: 1px 0 0 5px;
+      font-size: 16px;
+      color: #111111; /* 文字色も合わせて変更 */
+      border-radius: 5px; /* 角丸の適用 */
+    }
+    .label {
+      padding: 1px 0 0 5px;
+      font-size: 16px;
+      color: #ccdcff; /* 文字色も合わせて変更 */
+    }
+#tabs-container {
+        width: 320px; /* 必要に応じて幅を調整 */
+        overflow-x: auto; /* 横方向のスクロールを有効にする */
+        white-space: nowrap; /* 子要素を横に並べる */
+        padding: 0; /* 内側の余白 */
+
+        
+      }
+
+      .tab-button {
+          border-radius: 12px 12px 0 0; /* 上部の角だけを丸める */
+        display: inline-block; /* 横並びにする */
+        padding: 5px;
+        cursor: pointer;
+        background-color: #f1f1f1;
+        border: 1px solid #cccccc;
+        margin: 5px 2px 2px 2px;
+      }
+
+      .tab-button.active {
+        background-color: #ddd;
+        border-bottom: 1px solid transparent;
+      }
+
+      /* グループコンテナのスタイル */
+      .group-container {
+        display: none; /* デフォルトでは非表示 */
+      }
+
+      .group-container.active {
+        display: block;
+      }
+
+      .group-container {
+        margin-bottom: 20px; /* グループ間のスペース */
+      }
+
+      .group-container h3 {
+        margin: 0;
+        padding: 5px;
+        background-color: #f0f0f0;
+        border-bottom: 1px solid #ddd;
+        font-size: 16px;
+      }
+
+      .group-container img {
+        margin: 0px;
+        cursor: pointer;
+        border: 2px solid transparent; /* 初期状態の枠線はなし */
+        transition: border-color 0.3s; /* ホバー時の枠線色変化にアニメーションを追加 */
+      }
+
+      .group-container img.selected {
+        border-color: red; /* 選択された画像に赤い枠線を追加 */
+      }
+
+      body {
+        user-select: none; /* テキスト選択を防ぐ */
+        overflow: hidden;
+        background-color: #444445;
+      }
+      .button-img {
+        width: 32px; /* 幅を指定 */
+        height: 32px; /* 高さを指定 */
+        object-fit: cover; /* 画像のアスペクト比を維持 */
+      }
+      .button {
+        background-color: rgb(207, 246, 235); /* ボタンの背景色 */
+        border: 2px solid #add8e6; /* 薄い青色の枠線 */
+        font-size: 16px; /* テキストサイズ */
+      }
+
+      .button:hover {
+        background-color: rgb(243, 255, 251); /* ボタンの背景色 */
+      }
+
+      #dragElement {
+        position: absolute;
+        user-select: none; /* テキスト選択を防ぐ */
+      }
+      #mapCanvas {
+        border: 1px solid black;
+      }
+      #toolContainer {
+        position: fixed;
+        top: 0px; /* 画面の上から10px */
+        right: 0px; /* 画面の右から10px */
+        padding: 10px;
+        height: 100%;
+        box-sizing: border-box; /* パディングを含むサイズ計算 */
+        border: 1px solid #333333;
+        background-color: #444556;
+        z-index: 10;
+      }
+      #paletteContainer {
+        margin: 5px 0 5px 0;
+        width: 340px;
+        height: 60%;
+        border: 1px solid #333333;
+        background-color: #333547;
+        font-size: 18px;
+        overflow-y: scroll;
+      }
+      #palette {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      #palette img {
+        overflow-y: auto; /* 縦方向のスクロールを許可 */
+        width: 32px;
+        height: 32px;
+        margin: 1px;
+        cursor: pointer;
+        object-fit: contain;
+      }
+      .selected {
+        border: 2px solid red;
+      }
+      #layerlistContainer {
+        height: 100px; /* Fixed height */
+        overflow-y: auto; /* Enable vertical scrolling if needed */
+        background-color: lightblue;
+        padding: 5px;
+        margin: 0;
+        border: 1px solid;
+        font-size: 16px;
+      }
+      #layersList {
+        margin-top: 8px;
+      }
+      #layersList div {
+        cursor: pointer;
+        padding: 3px;
+        border: 2px solid #a2bab3;
+        margin-bottom: 5px;
+        background-color: #c1e5e5;
+      }
+      #layersList div.active {
+        background-color: #e4f5f7;
+      }
