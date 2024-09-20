@@ -92,7 +92,7 @@
       body {
         user-select: none; /* テキスト選択を防ぐ */
         overflow: hidden;
-        background-color: #444445;
+        background-color: #1E1E1E;
       }
       .button-img {
         width: 32px; /* 幅を指定 */
