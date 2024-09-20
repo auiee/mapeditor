@@ -47,13 +47,13 @@
         display: inline-block; /* 横並びにする */
         padding: 5px;
         cursor: pointer;
-        background-color: #f1f6fc;
+        background-color: #f1f1f1;
         border: 1px solid #cccccc;
         margin: 5px 2px 2px 2px;
       }
 
       .tab-button.active {
-        background-color: #ddd;
+        background-color: #ccdfff;
         border-bottom: 1px solid transparent;
       }
 
