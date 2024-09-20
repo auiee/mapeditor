@@ -124,7 +124,7 @@
         height: 100%;
         box-sizing: border-box; /* パディングを含むサイズ計算 */
         border: 1px solid #333333;
-        background-color: #444556;
+        background-color: #aaaaaa;
         z-index: 10;
       }
       #paletteContainer {
