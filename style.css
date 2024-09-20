@@ -100,8 +100,8 @@
         object-fit: cover; /* 画像のアスペクト比を維持 */
       }
       .button {
-        background-color: rgb(207, 246, 235); /* ボタンの背景色 */
-        border: 2px solid #add8e6; /* 薄い青色の枠線 */
+        background-color: rgba(207, 246, 235, 0.5); /* ボタンの背景色 */
+        border: 1px solid #add8e6; /* 薄い青色の枠線 */
         font-size: 16px; /* テキストサイズ */
       }
 
