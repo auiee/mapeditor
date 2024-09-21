@@ -100,13 +100,13 @@
       }
       .button {
           border-radius: 5px; /* 上部の角だけを丸める */
-        background-color: rgba(207, 246, 235, 0); /* ボタンの背景色 */
+        background-color: rgba(230, 246, 235, 0.4); /* ボタンの背景色 */
         border: 2px solid #add8e6; /* 薄い青色の枠線 */
         font-size: 16px; /* テキストサイズ */
       }
 
       .button:hover {
-        background-color: rgb(243, 255, 251); /* ボタンの背景色 */
+        background-color: rgba(243, 255, 251, 0.8); /* ボタンの背景色 */
       }
 
       #dragElement {
