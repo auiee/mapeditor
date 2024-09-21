@@ -114,7 +114,7 @@
         user-select: none; /* テキスト選択を防ぐ */
       }
       #mapCanvas {
-        border: 1px solid black;
+        border: 1px solid #444444;
       }
       #toolContainer {
         position: fixed;
@@ -123,7 +123,7 @@
         padding: 10px;
         height: 100%;
         box-sizing: border-box; /* パディングを含むサイズ計算 */
-        border: 1px solid #333333;
+        border: 1px solid #777777;
         background-color: #bcbcbc;
         z-index: 10;
       }
@@ -131,7 +131,7 @@
         margin: 5px 0 5px 0;
         width: 340px;
         height: 60%;
-        border: 1px solid #333333;
+        border: 1px solid #666666;
         background-color: #acacac;
         font-size: 18px;
         overflow-y: scroll;
@@ -157,7 +157,7 @@
         background-color: lightblue;
         padding: 5px;
         margin: 0;
-        border: 1px solid;
+        border: 1px solid #666687;
         font-size: 16px;
       }
       #layersList {
