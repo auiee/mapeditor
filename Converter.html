@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像テキストエンコーダー</title>
+    <style>
+        .folder {
+            margin-bottom: 20px;
+        }
+        .folder h3 {
+            margin: 10px 0;
+        }
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .image-container img {
+            width: 100px; /* 表示サイズ調整 */
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>画像テキストエンコーダー</h1>
+
+    <input type="file" id="folderInput" webkitdirectory multiple accept="image/*">
+    <button id="createJsonButton">フォルダからJSONを生成</button>
+
+    <h2>既存のJSONファイルを読み込む</h2>
+    <input type="file" id="jsonInput" accept=".json">
+    <button id="loadJsonButton">JSONを読み込む</button>
+
+    <input type="file" id="folderInputForAddition" webkitdirectory multiple accept="image/*" style="display:none;">
+    <button id="encodeButton" style="display:none;">エンコードしてJSONに追加</button>
+
+    <button id="downloadButton" style="display:none;">JSONをダウンロード</button>
+    <div id="loading" style="display:none;">処理中...</div>
+
+    <h2>読み込んだ画像の表示</h2>
+    <div id="imageDisplay"></div>
+
+    <script>
+        let jsonData = [];
+
+        // フォルダから新しいJSONを生成
+        document.getElementById('createJsonButton').addEventListener('click', () => {
+            const files = document.getElementById('folderInput').files;
+            jsonData = []; // 新しいデータでリセット
+            document.getElementById('loading').style.display = 'block';
+
+            const folderName = files[0].webkitRelativePath.split('/')[0]; // フォルダ名を取得
+
+            Array.from(files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const base64String = event.target.result.split(',')[1]; // Get base64 part
+                        jsonData.push({ id: index + 1, image: base64String, folder: folderName });
+                        if (index === files.length - 1) {
+                            // JSONのカウントと生成
+                            const outputJson = {
+                                count: jsonData.length,
+                                images: jsonData
+                            };
+                            document.getElementById('downloadButton').style.display = 'block'; // ダウンロードボタンを表示
+                        }
+                    } catch (error) {
+                        alert('画像処理中にエラーが発生しました: ' + error.message);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+
+            document.getElementById('loading').style.display = 'none';
+        });
+
+        // 既存のJSONファイルを読み込む
+        document.getElementById('loadJsonButton').addEventListener('click', () => {
+            const fileInput = document.getElementById('jsonInput');
+            if (fileInput.files.length === 0) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const existingData = JSON.parse(event.target.result);
+                    jsonData = existingData.images; // 既存の画像データを取得
+                    
+                    // IDを1から順番に振り直す
+                    jsonData.forEach((imageData, index) => {
+                        imageData.id = index + 1; // IDを再設定
+                    });
+
+                    displayImages(jsonData); // 画像を表示する関数を呼び出す
+                    document.getElementById('folderInputForAddition').style.display = 'block'; // フォルダ選択ボタンを表示
+                    document.getElementById('encodeButton').style.display = 'block'; // エンコードボタンを表示
+                } catch (error) {
+                    alert('JSONファイルの読み込み中にエラーが発生しました: ' + error.message);
+                }
+            };
+            reader.readAsText(fileInput.files[0]);
+        });
+
+        // フォルダから画像を追加するためのエンコードボタン
+        document.getElementById('encodeButton').addEventListener('click', () => {
+            const files = document.getElementById('folderInputForAddition').files;
+            const startIndex = jsonData.length; // 現在のデータ数を記録
+            document.getElementById('loading').style.display = 'block';
+
+            const folderName = files[0].webkitRelativePath.split('/')[0]; // フォルダ名を取得
+
+            Array.from(files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const base64String = event.target.result.split(',')[1]; // Get base64 part
+                        jsonData.push({ id: startIndex + index + 1, image: base64String, folder: folderName });
+                        if (index === files.length - 1) {
+                            document.getElementById('downloadButton').style.display = 'block'; // ダウンロードボタンを表示
+                            displayImages(jsonData); // 追加後の画像も表示する
+                        }
+                    } catch (error) {
+                        alert('画像処理中にエラーが発生しました: ' + error.message);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+
+            document.getElementById('loading').style.display = 'none';
+        });
+
+        // JSONファイルのダウンロード
+        document.getElementById('downloadButton').addEventListener('click', () => {
+            // IDでソートする
+            jsonData.sort((a, b) => a.id - b.id);
+
+            const outputJson = {
+                count: jsonData.length,
+                images: jsonData
+            };
+            const blob = new Blob([JSON.stringify(outputJson)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'images.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+
+        // 画像を表示する関数
+        function displayImages(images) {
+            const imageDisplayDiv = document.getElementById('imageDisplay');
+            imageDisplayDiv.innerHTML = ''; // 前回の内容をクリア
+
+            const foldersMap = {};
+
+            images.forEach(imageData => {
+                if (!foldersMap[imageData.folder]) { 
+                    foldersMap[imageData.folder] = []; 
+                }
+                foldersMap[imageData.folder].push(imageData); 
+            });
+
+            for (const [folderName, imagesInFolder] of Object.entries(foldersMap)) {
+                const folderDiv = document.createElement('div');
+                folderDiv.classList.add('folder');
+
+                const folderHeader = document.createElement('h3');
+                folderHeader.textContent = `フォルダ: ${folderName}`;
+                folderDiv.appendChild(folderHeader);
+
+                const imageContainer = document.createElement('div');
+                imageContainer.classList.add('image-container');
+
+                imagesInFolder.forEach(imageData => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = `data:image/jpeg;base64,${imageData.image}`; // Base64形式で画像を表示
+                    imgElement.alt = `Image ID: ${imageData.id}`;
+
+                    const idLabel = document.createElement('span');
+                    idLabel.textContent = `ID: ${imageData.id}`;
+                    
+                    imageContainer.appendChild(idLabel);
+                    imageContainer.appendChild(imgElement);
+                });
+
+                folderDiv.appendChild(imageContainer);
+                imageDisplayDiv.appendChild(folderDiv);
+            }
+        }
+    </script>
+</body>
+</html>
