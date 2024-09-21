@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像分割プログラム</title>
+</head>
+<body>
+    <input type="file" id="imageInput" accept="image/*">
+    <input type="number" id="pixelInput" placeholder="分割サイズ（ピクセル）">
+    <button id="splitButton">画像を分割</button>
+    <progress id="progressBar" value="0" max="100" style="display:none;"></progress>
+    <a id="downloadLink" style="display:none;">ダウンロード</a>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script>document.getElementById('splitButton').addEventListener('click', async () => {
+    const imageInput = document.getElementById('imageInput');
+    const pixelInput = document.getElementById('pixelInput');
+    const progressBar = document.getElementById('progressBar');
+    const downloadLink = document.getElementById('downloadLink');
+
+    if (imageInput.files.length === 0 || pixelInput.value <= 0) {
+        alert('画像を選択し、分割サイズを指定してください。');
+        return;
+    }
+
+    const file = imageInput.files[0];
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    await new Promise((resolve) => img.onload = resolve);
+
+    const pixelSize = parseInt(pixelInput.value);
+    const zip = new JSZip();
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const rows = Math.ceil(img.height / pixelSize);
+    const cols = Math.ceil(img.width / pixelSize);
+    progressBar.style.display = 'block';
+
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.width = Math.min(pixelSize, img.width - x * pixelSize);
+            canvas.height = Math.min(pixelSize, img.height - y * pixelSize);
+            ctx.drawImage(img, x * pixelSize, y * pixelSize, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+
+            const dataUrl = canvas.toDataURL('image/png');
+            const blob = await fetch(dataUrl).then(res => res.blob());
+            zip.file(`image_${y}_${x}.png`, blob);
+        }
+        progressBar.value = ((y + 1) / rows) * 100;
+    }
+
+    const content = await zip.generateAsync({ type: 'blob' });
+    saveAs(content, 'images.zip');
+    progressBar.style.display = 'none';
+    downloadLink.style.display = 'none';
+});
+</script>
+</body>
+</html>
